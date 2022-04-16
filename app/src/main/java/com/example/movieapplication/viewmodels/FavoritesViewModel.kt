@@ -11,20 +11,21 @@ class FavoritesViewModel : ViewModel(){
         get() = _favoriteMovies
 
     fun addFavMovie(movie : Movie){
-        //if(!exists(movie = movie)){}
+        if(!exists(movie = movie)){
         _favoriteMovies.add(movie)
+        }
     }
 
     fun removeFavMovie(movie : Movie){
         _favoriteMovies.remove(movie)
     }
 
-    fun getAllFavMovie(): List<Movie> {
-        return _favoriteMovies
+    private fun exists(movie: Movie) : Boolean {
+        return _favoriteMovies.any {m -> m.id == movie.id}
     }
 
-    fun checkIfAlreadyFavMovie(movie : Movie){ //: Boolean
-        _favoriteMovies.contains(movie)
+    fun checkIfAlreadyFavMovie(movie : Movie) : Boolean { //: Boolean
+        return exists(movie)
     }
 
 }

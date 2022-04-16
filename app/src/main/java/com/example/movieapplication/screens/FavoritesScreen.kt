@@ -18,24 +18,25 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.movieapplication.models.Movie
 import com.example.movieapplication.models.getMovies
+import com.example.movieapplication.viewmodels.FavoritesViewModel
 import com.example.movieapplication.widgets.MovieRow
 
 @Composable
-fun FavoritesScreen(navController: NavController){
-    var favMovieList = getMovies()
-    var favoriteList = listOf(favMovieList[1], favMovieList[4])
+fun FavoritesScreen(navController: NavController, viewModel: FavoritesViewModel){
 
-    MainContent(favoriteList = favoriteList, navController = navController) {
+    var favMovieList = viewModel.favoriteMovies
+
+    MainContent(favoriteList = favMovieList, navController = navController, favoritesViewModel = viewModel) {
         LazyColumn{
-            items(favoriteList){ favMovie ->
-                MovieRow(movie = favMovie)                
+            items(favMovieList){ favMovie ->
+                MovieRow(movie = favMovie, alreadyFavMovie = viewModel.checkIfAlreadyFavMovie(movie = favMovie), showFavIcon = false)
             }
         }
     }
 }
 
 @Composable
-fun MainContent(favoriteList: List<Movie>, navController: NavController, content: @Composable () -> Unit){
+fun MainContent(favoriteList: List<Movie>, navController: NavController, favoritesViewModel: FavoritesViewModel, content: @Composable () -> Unit){
 
     Scaffold(
         topBar = {

@@ -1,6 +1,6 @@
 package com.example.movieapplication.widgets
 
-import android.widget.HorizontalScrollView
+
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
@@ -14,7 +14,7 @@ import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -27,11 +27,11 @@ import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import com.example.movieapplication.models.Movie
 import com.example.movieapplication.models.getMovies
-import java.util.function.IntConsumer
+import com.example.movieapplication.ui.theme.Teal200
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun MovieRow(movie: Movie, onItemClick: (String) -> Unit = {}) {
+fun MovieRow(movie: Movie, alreadyFavMovie: Boolean, onItemClick: (String) -> Unit = {}, onFavoriteIconClick: () -> Unit = {}, showFavIcon: Boolean) {
 
     var arrows by remember {
         mutableStateOf(false)
@@ -109,7 +109,9 @@ fun MovieRow(movie: Movie, onItemClick: (String) -> Unit = {}) {
                     contentDescription = "arrowDown",
                     Modifier.clickable { arrows = !arrows })
             }
-            //FavoriteButton()
+            if(showFavIcon){
+                FavoriteIcon(alreadyFavMovie, onFavoriteIconClick)
+            }
         }
     }
 }
@@ -132,6 +134,15 @@ fun HorizontalScrollableImageView(movie: Movie = getMovies()[0]){
     }
 }
 
-/*fun FavoriteButton(){
-    Icon(imageVector = Icons.Default.FavoriteBorder, contentDescription = "unfilled heart icon")
-}*/
+@Composable
+fun FavoriteIcon(alreadyFavMovie : Boolean, onFavoriteIconClick: () -> Unit = {}){
+
+    IconButton(onClick = { onFavoriteIconClick() }) {
+        Icon(imageVector =
+        if(alreadyFavMovie){
+            Icons.Default.Favorite
+        } else {
+            Icons.Default.FavoriteBorder
+        }, tint = Teal200, contentDescription = "unfilled heart icon")
+    }
+}

@@ -17,6 +17,19 @@ import com.example.movieapplication.viewmodels.FavoritesViewModel
 
 
 class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        //val vm: FavoritesViewModel by viewModels()
+        // vm.favoriteMovies - printing out
+
+        setContent {
+            MyApp {
+                MovieNavigation()
+            }
+        }
+    }
+
     override fun onStart() {
         super.onStart()
         Log.i("MainActivity", "onStart")
@@ -41,19 +54,8 @@ class MainActivity : ComponentActivity() {
         super.onDestroy()
         Log.i("MainActivity", "onDestroy")
     }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        // vm.favoriteMovies - printing out
-
-        setContent {
-            MyApp {
-                MovieNavigation()
-            }
-        }
-    }
 }
+
 
 @Composable
 fun MyApp(content: @Composable () -> Unit){

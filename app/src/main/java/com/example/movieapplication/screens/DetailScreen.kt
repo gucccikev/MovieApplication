@@ -12,19 +12,40 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.movieapplication.models.Movie
 import com.example.movieapplication.models.getMovies
+import com.example.movieapplication.viewmodels.FavoritesViewModel
 import com.example.movieapplication.widgets.HorizontalScrollableImageView
 import com.example.movieapplication.widgets.MovieRow
 
 @Composable
-fun DetailScreen(navController: NavController, movieId: String?){
+fun DetailScreen(navController: NavController, viewModel: FavoritesViewModel, movieId: String?){
     val movie = filterMovie(movieId = movieId)
 
-    MainContent(movie, navController) {
+    var fav by remember {
+        mutableStateOf(false)
+    }
+
+    fav = viewModel.checkIfAlreadyFavMovie(movie)
+
+    MainContent(movie, navController, viewModel) {
         Surface(modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()) {
             Column {
-                MovieRow(movie = movie)
+                MovieRow(movie = movie,
+                    alreadyFavMovie = fav,
+                    onItemClick = { movieId -> navController.navigate("detailscreen/$movieId") },
+                    onFavoriteIconClick = {
+                        fav = viewModel.checkIfAlreadyFavMovie(movie)
+                        if (fav) {
+                            viewModel.removeFavMovie(movie)
+                            fav = false
+                        } else {
+                            viewModel.addFavMovie(movie)
+                            fav = true
+                        }
+                    },
+                    showFavIcon = true
+                )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -39,7 +60,7 @@ fun DetailScreen(navController: NavController, movieId: String?){
 }
 
 @Composable
-fun MainContent(movie: Movie, navController: NavController, content: @Composable () -> Unit) {
+fun MainContent(movie: Movie, navController: NavController, favoritesViewModel: FavoritesViewModel, content: @Composable () -> Unit) {
 
     Scaffold(
         topBar = {

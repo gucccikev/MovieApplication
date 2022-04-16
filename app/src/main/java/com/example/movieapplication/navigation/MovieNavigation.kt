@@ -14,16 +14,18 @@ import com.example.movieapplication.viewmodels.FavoritesViewModel
 @Composable
 fun MovieNavigation() {
     val navController = rememberNavController()
+
+    val favoritesViewModel : FavoritesViewModel = viewModel()
+
     NavHost(navController = navController, startDestination = "homescreen") {
-        composable("homescreen") { HomeScreen(navController = navController, viewModel = FavoritesViewModel()) }
-        composable(
-            "detailscreen/{movieId}",
-            arguments = listOf(navArgument("movieId"){})
-            ) { backStackEntry -> DetailScreen(navController = navController,
-            movieId = backStackEntry.arguments?.getString("movieId"))
+        composable("homescreen") { HomeScreen(navController = navController, viewModel = favoritesViewModel)
+        }
+        composable("detailscreen/{movieId}", arguments = listOf(navArgument("movieId"){})) {
+                backStackEntry -> DetailScreen(navController = navController, viewModel = favoritesViewModel, movieId = backStackEntry.arguments?.getString("movieId"))
         }
         composable(
-            "favoritesscreen") { FavoritesScreen(navController = navController) }
+            "favoritesscreen") { FavoritesScreen(navController, viewModel = favoritesViewModel)
+        }
     }
     //val favoritesViewModel: FavoritesViewModel = viewModel()
     //favoritesViewModel.favoriteMovies

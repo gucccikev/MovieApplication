@@ -14,6 +14,7 @@ import com.example.movieapplication.models.Movie
 import com.example.movieapplication.models.getMovies
 import com.example.movieapplication.ui.theme.MovieApplicationTheme
 import com.example.movieapplication.viewmodels.FavoritesViewModel
+import com.example.movieapplication.widgets.FavoriteIcon
 import com.example.movieapplication.widgets.MovieRow
 
 
@@ -53,21 +54,40 @@ fun HomeScreen(navController: NavController, viewModel: FavoritesViewModel){
                 )
             }
         ){
-            MainContent(navController)
+            MainContent(navController, viewModel)
         }
     }
 
 }
 
 @Composable
-fun MainContent(navController: NavController, movieList: List<Movie> = getMovies()) {
+fun MainContent(navController: NavController, favoritesViewModel: FavoritesViewModel, movieList: List<Movie> = getMovies()) {
 
-    LazyColumn{
+    var fav by remember {
+        mutableStateOf(false)
+    }
+
+    LazyColumn {
         items(movieList) { movie ->
-            MovieRow(movie = movie){ movieId ->
-                navController.navigate("detailscreen/$movieId")
-            }
+            fav = favoritesViewModel.checkIfAlreadyFavMovie(movie)
+            MovieRow(
+                movie = movie,
+                alreadyFavMovie = fav,
+                onItemClick = { movieId -> navController.navigate("detailscreen/$movieId") },
+                onFavoriteIconClick = {
+                    fav = favoritesViewModel.checkIfAlreadyFavMovie(movie)
+                    if (fav) {
+                        favoritesViewModel.removeFavMovie(movie)
+                        fav = false
+                    } else {
+                        favoritesViewModel.addFavMovie(movie)
+                        fav = true
+                    }
+                },
+                showFavIcon = true
+            )
         }
     }
 }
+
 
